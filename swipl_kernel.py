@@ -8,7 +8,7 @@ from IPython.utils.process import getoutput
 def exec_swipl(code):
 
 
-    dirpath = '~/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
+    dirpath = '/home/max/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
 
     #code = 'return 0;'
     # We define the source and executable filenames.

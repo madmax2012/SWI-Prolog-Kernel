@@ -1,6 +1,6 @@
 {
 "argv": ["python",
-         "~/.local/share/jupyter/kernels/swi/swipl_kernel.py",
+         "/home/max/.local/share/jupyter/kernels/swi/swipl_kernel.py",
          "-f",
          "{connection_file}"
         ],

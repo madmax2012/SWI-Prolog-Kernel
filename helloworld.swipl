@@ -1,0 +1,6 @@
+:- initialization main.
+
+main :-
+  current_prolog_flag(argv, Argv),
+  format('Hello  World, argv:~w\n', [Argv]),
+  halt(0).
