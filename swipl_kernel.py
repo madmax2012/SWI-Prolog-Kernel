@@ -6,27 +6,22 @@ import jupyter_client
 from IPython.utils.process import getoutput
 
 def exec_swipl(code):
+    source_path, target_path = setup_env()
 
-
-    dirpath = '/home/max/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
-
-    #code = 'return 0;'
-    # We define the source and executable filenames.
-    source_path = op.join(dirpath, 'temp.pl')
-    target_path = op.join(dirpath, 'out.txt')
-    program_path = op.join(dirpath)
-    #print(str(source_path))
-    #print((program_path))
     with open(source_path, 'w') as f:
         f.write(code)
 
     os.system("swipl {0:s} > {1:s}".format(source_path, target_path))  # source_path, program_path))
     #out = os.system("swipl {0:s} ".format(source_path))  # source_path, program_path))
-    #print(out)
     f = open(target_path, 'r')
-    out = f.read()
-    return out
-    #return getoutput(target_path)
+    return f.read()
+
+def setup_env():
+    dirpath = '/home/max/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
+
+    source_path = op.join(dirpath, 'temp.pl')
+    target_path = op.join(dirpath, 'out.txt')
+    return source_path, target_path
 
 
     
@@ -36,7 +31,7 @@ from ipykernel.kernelbase import Kernel
 
 class SwiplKernel(Kernel):
 
-    # Kernel information.
+    # Khttp://localhost:8890/notebooks/swipl_testing.ipynb#ernel information.
     implementation = 'SWI-Prolog'
     implementation_version = '0.0'
     language = 'Prolog'
