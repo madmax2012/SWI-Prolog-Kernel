@@ -1,8 +1,8 @@
 import os
 import os.path as op
 import tempfile
-import IPython as ipy
-
+import IPython
+import jupyter_client
 from IPython.utils.process import getoutput
 
 def exec_swipl(code):
@@ -21,10 +21,14 @@ def exec_swipl(code):
         f.write(code)
 
     os.system("swipl {0:s} > {1:s}".format(source_path, target_path))  # source_path, program_path))
-    #result = ipy.get_ipython().getoutput(os.system("swipl {0:s} ".format(source_path)), split=True)  # source_path, program_path))
+    #out = os.system("swipl {0:s} ".format(source_path))  # source_path, program_path))
+    #print(out)
+    f = open(target_path, 'r')
+    out = f.read()
+    return out
+    #return getoutput(target_path)
 
-    #output = open(target_path, "r")
-    return getoutput(target_path)
+
     
 
 """SWI-Prolog kernel wrapper"""
