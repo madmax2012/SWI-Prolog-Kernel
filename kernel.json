@@ -1,8 +1,9 @@
 {
 "argv": ["python",
-         "/home/max/.local/share/jupyter/kernels/swi/swipl_kernel.py",
+         "/opt/conda/share/jupyter/kernels/swi/swipl_kernel.py",
          "-f",
          "{connection_file}"
         ],
 "display_name": "SWI-Prolog-dev"
 }
+
