@@ -4,19 +4,28 @@ import tempfile
 import IPython
 import jupyter_client
 from IPython.utils.process import getoutput
+from backports import tempfile
 
 def exec_swipl(code):
     temp_path, output_path, code_path = setup_env()
-    dirpath = '/home/max/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
-    preCode = 'do([]). do([V-G|R]) :-  findall(V, ( call(G),  write(G), nl), _), do(R).'
-    startQuery = ':- do(['
+    #dirpath = '/opt/conda/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
+    #preCode = 'do([]). do([V-G|R]) :-  findall(V, (  (call(G)->write(\'True: \');write(\'False: \')) ,  write(G), nl), _), do(R).'
+    preCode1 = 'doa([]).\n\n' 
+    preCode2 = 'doa( [G|_] ) :-  write(\' \\n----------------------------------------- \\n Call of: \\t \'), write(G), call(G), write(\' \\n TRUE with:\\t \'), write(G), fail.\n\n'
+    preCode3 = 'doa( [G|R] ) :- not(G), !, write(\' \\n FALSE!  \\t \'), write(G), doa(R).\n\n'
+    preCode4 = 'doa( [_|R] ) :- doa(R).\n\n'
+    emptyline = '\n'
+    startQuery = ':- doa(['
     endQuery = ']).'
     with open(temp_path, 'w') as f: # 
         f.write(code)
     ''' Parser code begins here '''
-    started = 0
     textlist = []
-    textlist.append(preCode)
+    textlist.append(preCode1)
+    textlist.append(preCode2)
+    textlist.append(preCode3)
+    textlist.append(preCode4)
+    textlist.append(emptyline)
     with open(temp_path) as f: 
         ''' 
         some hacky logic to enable students to simply add queries
@@ -33,6 +42,13 @@ def exec_swipl(code):
     print(''.join(textlist))
     with open(code_path, 'w') as rules:
         rules.write(''.join(textlist))
+    tmp_dir = tempfile.mkdtemp()
+    #tmp_dir = tempfile.TemporaryDirectory()
+    code2_path = op.join(tmp_dir, 'code2.pl')
+    with open(code_path, 'w') as rules:
+         rules.write(''.join(textlist))
+    #with tempfile.TemporaryDirectory() as temp_dir
+    
     #rules_target_path
     ''' Parser code begins here '''
 
@@ -43,7 +59,8 @@ def exec_swipl(code):
     return f.read()
 
 def setup_env():
-    dirpath = '/home/max/.local/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
+    #dirpath = '/opt/conda/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
+    dirpath =  tempfile.mkdtemp()
 
     temp_path = op.join(dirpath, 'temp.pl')
     output_path = op.join(dirpath, 'out.txt')
@@ -93,3 +110,5 @@ class SwiplKernel(Kernel):
 if __name__ == '__main__':
     from ipykernel.kernelapp import IPKernelApp
     IPKernelApp.launch_instance(kernel_class=SwiplKernel)
+
+
