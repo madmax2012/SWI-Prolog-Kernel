@@ -8,8 +8,7 @@ from backports import tempfile
 
 def exec_swipl(code):
     temp_path, output_path, code_path = setup_env()
-    #dirpath = '/opt/conda/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
-    #preCode = 'do([]). do([V-G|R]) :-  findall(V, (  (call(G)->write(\'True: \');write(\'False: \')) ,  write(G), nl), _), do(R).'
+    ''' Parser code begins here '''
     preCode1 = 'doa([]).\n\n' 
     preCode2 = 'doa( [G|_] ) :-  write(\' \\n----------------------------------------- \\n Call of: \\t \'), write(G), call(G), write(\' \\n TRUE with:\\t \'), write(G), fail.\n\n'
     preCode3 = 'doa( [G|R] ) :- not(G), !, write(\' \\n FALSE!  \\t \'), write(G), doa(R).\n\n'
@@ -19,13 +18,14 @@ def exec_swipl(code):
     endQuery = ']).'
     with open(temp_path, 'w') as f: # 
         f.write(code)
-    ''' Parser code begins here '''
+    
     textlist = []
     textlist.append(preCode1)
     textlist.append(preCode2)
     textlist.append(preCode3)
     textlist.append(preCode4)
     textlist.append(emptyline)
+
     with open(temp_path) as f: 
         ''' 
         some hacky logic to enable students to simply add queries
@@ -42,40 +42,27 @@ def exec_swipl(code):
     print(''.join(textlist))
     with open(code_path, 'w') as rules:
         rules.write(''.join(textlist))
-    tmp_dir = tempfile.mkdtemp()
-    #tmp_dir = tempfile.TemporaryDirectory()
     code2_path = op.join(tmp_dir, 'code2.pl')
     with open(code_path, 'w') as rules:
          rules.write(''.join(textlist))
-    #with tempfile.TemporaryDirectory() as temp_dir
-    
-    #rules_target_path
-    ''' Parser code begins here '''
 
-
-    os.system("swipl {0:s} > {1:s}  2>&1 ".format(code_path, output_path))  # source_path, program_path))
-    #out = os.system("swipl {0:s} ".format(source_path))  # source_path, program_path))
+    os.system("swipl {0:s} > {1:s}  2>&1 ".format(code_path, output_path))  
     f = open(output_path, 'r')
     return f.read()
 
 def setup_env():
     #dirpath = '/opt/conda/share/jupyter/kernels/swi/temp'  # tempfile.mkdtemp()
     dirpath =  tempfile.mkdtemp()
-
     temp_path = op.join(dirpath, 'temp.pl')
     output_path = op.join(dirpath, 'out.txt')
     code_path = op.join(dirpath, 'code.pl')
     return temp_path, output_path, code_path 
-
-
-    
 
 """SWI-Prolog kernel wrapper"""
 from ipykernel.kernelbase import Kernel
 
 class SwiplKernel(Kernel):
 
-    # Khttp://localhost:8890/notebooks/swipl_testing.ipynb#ernel information.
     implementation = 'SWI-Prolog'
     implementation_version = '0.0'
     language = 'Prolog'
