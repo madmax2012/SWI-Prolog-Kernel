@@ -69,8 +69,6 @@ def setup_env():
 from ipykernel.kernelbase import Kernel
 
 class SwiplKernel(Kernel):
-
-    # Khttp://localhost:8890/notebooks/swipl_testing.ipynb#ernel information.
     implementation = 'SWI-Prolog'
     implementation_version = '0.0'
     language = 'Prolog'
